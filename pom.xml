@@ -48,6 +48,15 @@
 
   <properties>
     <sisu-guice.version>3.1.8</sisu-guice.version>
+
+    <public-release.serverId>local-nexus</public-release.serverId>
+    <public-release.url>http://localhost:8081/nexus/service/local/staging/deploy/maven2</public-release.url>
+
+    <public-snapshot.serverId>local-nexus</public-snapshot.serverId>
+    <public-snapshot.url>http://localhost:8081/nexus/content/repositories/snapshots</public-snapshot.url>
+
+    <staging.serverId>local-nexus</staging.serverId>
+    <staging.nexusUrl>http://localhost:8081/nexus</staging.nexusUrl>
   </properties>
 
   <dependencyManagement>
@@ -245,6 +254,24 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.0-SNAPSHOT</version>
+          <extensions>true</extensions>
+          <configuration>
+            <nexusUrl>${staging.nexusUrl}</nexusUrl>
+            <serverId>${staging.serverId}</serverId>
+            <altStagingDirectory>${staging.directory}</altStagingDirectory>
+            <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
+            <stagingProgressTimeoutMinutes>${staging.progressTimeout}</stagingProgressTimeoutMinutes>
+            <tags>
+              <localUsername>${user.name}</localUsername>
+              <javaVersion>${java.version}</javaVersion>
+            </tags>
+          </configuration>
+        </plugin>
+
+        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>smc-maven-plugin</artifactId>
           <version>1.0-alpha-1</version>
@@ -328,8 +355,9 @@
       </plugin>
 
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
+        <groupId>org.eclipse.sisu</groupId>
         <artifactId>sisu-maven-plugin</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
         <executions>
           <execution>
             <goals>
